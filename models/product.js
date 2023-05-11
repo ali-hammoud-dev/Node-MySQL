@@ -1,6 +1,18 @@
-const { json } = require("body-parser");
 const fs = require("fs");
 const pt = require("path");
+
+const p = pt.join(
+  pt.dirname(process.mainModule.filename),
+  "data",
+  "products.json"
+);
+
+const getProductsFromFile = (callBack) => {
+  fs.readFile(p, (err, fileContent) => {
+    if (err) callBack([]);
+    else callBack(JSON.parse(fileContent));
+  });
+};
 
 module.exports = class Product {
   constructor(t) {
@@ -8,32 +20,15 @@ module.exports = class Product {
   }
 
   save() {
-    const p = pt.join(
-      pt.dirname(process.mainModule.filename),
-      "data",
-      "products.json"
-    );
-
-    fs.readFile(p, (err, fileContent) => {
-      let products = [];
-      if (!err) {
-        products = JSON.parse(fileContent);
-      }
+    getProductsFromFile((products) => {
       products.push(this);
-      fs.writeFile(p, JSON.stringify(products), (err) => {});
+      fs.writeFile(p, JSON.stringify(products), (err) => {
+        console.log(err);
+      });
     });
   }
 
-  static fetchall(cb) {
-    const p = pt.join(
-      pt.dirname(process.mainModule.filename),
-      "data",
-      "products.json"
-    );
-
-    fs.readFile(p, (err, fileContent) => {
-      if (err) cb([]);
-      cb(JSON.parse(fileContent));
-    });
+  static fetchall(callBack) {
+    getProductsFromFile(callBack);
   }
 };
