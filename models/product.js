@@ -1,10 +1,10 @@
-const fs = require("fs");
-const pt = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const p = pt.join(
-  pt.dirname(process.mainModule.filename),
-  "data",
-  "products.json"
+const p = path.join(
+  path.dirname(process.mainModule.filename),
+  'data',
+  'products.json'
 );
 
 const getProductsFromFile = (callBack) => {
