@@ -29,9 +29,9 @@ module.exports = class Product {
         const existingProductIndex = products.findIndex(
           (prod) => prod.id === this.id
         );
-        const updateProducts = [...products];
-        updateProducts[existingProductIndexg] = this;
-        fs.writeFile(p, JSON.stringify(updateProducts), (err) => {
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
           console.log(err);
         });
       } else {
@@ -50,7 +50,7 @@ module.exports = class Product {
 
   static findById(id, callback) {
     getProductsFromFile((products) => {
-      const product = products.find((p) => p.id == id);
+      const product = products.find((p) => p.id === id);
       callback(product);
     });
   }

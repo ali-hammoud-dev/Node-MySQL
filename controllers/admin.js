@@ -40,22 +40,21 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  const updateTitle = req.body.title;
-  const updatePrice = req.body.price;
-  const updateImageUrl = req.body.imageUrl;
-  const updateDescription = req.body.description;
-
-  const updateProduct = new Product(
+  const updatedTitle = req.body.title;
+  const updatedPrice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDesc = req.body.description;
+  const updatedProduct = new Product(
     prodId,
-    updateTitle,
-    updateImageUrl,
-    updateDescription,
-    updatePrice
+    updatedTitle,
+    updatedImageUrl,
+    updatedDesc,
+    updatedPrice
   );
-
-  updateProduct.save();
-  res.redirect("/admin/products");
+  updatedProduct.save();
+  res.redirect('/admin/products');
 };
+
 
 exports.getProducts = (req, res, next) => {
   Product.fetchall((products) => {
