@@ -38,16 +38,34 @@ exports.getIndex = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findById(prodId, product => {
+  Product.findById(prodId, (product) => {
     Cart.addProduct(prodId, product.price);
   });
   res.redirect("/cart");
 };
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    pageTitle: "Your Cart",
-    path: "/cart",
+  Cart.getCart((cart) => {
+    Product.fetchall((products) => {
+      const cartProducts = [];
+      for (product of products) {
+        const cartProductData = cart.products.find(
+          (prod) => prod.id === product.id
+        );
+        if (cartProductData) {
+          cartProducts.push({
+            productData: product,
+            qty: cartProductData.qty,
+            price: product.price * cartProductData.qty,
+          });
+        }
+      }
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: cartProducts,
+      });
+    });
   });
 };
 
