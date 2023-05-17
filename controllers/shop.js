@@ -2,38 +2,45 @@ const Product = require("../models/product");
 const Cart = require("../models/cart");
 
 exports.getAllProducts = (req, res, next) => {
-  Product.fetchall((products) => {
-    //shop/product-list ==> ejs File
-    res.render("shop/product-list", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/products",
-      hasProducts: products.length > 0,
-      noProductsFound: "No Products Found",
+  Product.fetchall()
+    .then(([rows, fieldData]) => {
+      res.render("shop/product-list", {
+        prods: rows,
+        pageTitle: "All Products",
+        path: "/products",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findById(productId, (product) => {
-    res.render("shop/product-detail", {
-      product: product,
-      pageTitle: product.title,
-      path: "/products",
-    });
-  });
+  Product.findById(productId)
+    .then(([product]) => {
+      console.log(product);
+      res.render("shop/product-detail", {
+        product: product[0],
+        pageTitle: product.title,
+        path: "/products",
+      });
+    })
+    .catch(() => {});
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchall((products) => {
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      noProductsFound: "No Products Found!",
-      path: "/",
+  Product.fetchall()
+    .then(([rows, fieldData]) => {
+      res.render("shop/index", {
+        prods: rows,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  });
 };
 
 exports.postCart = (req, res, next) => {
