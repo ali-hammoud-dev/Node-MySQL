@@ -2,22 +2,15 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
-const connection = require("./util/connection");
+const sequelize = require("./util/database");
 
 const app = express();
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-
-connection.connect((err) => {
-  if (err) {
-    console.error("Error connecting to the database:", err);
-    return;
-  }
-  console.log("Connected to the database.");
-});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -27,4 +20,12 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(3000);
+//it syncs your models to the database by creating the appriopriate tables and if you have them relations.
+sequelize
+  .sync()
+  .then((result) => {
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
