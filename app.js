@@ -7,6 +7,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const app = express();
 
@@ -41,12 +43,11 @@ Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsTo(User);
-
-//belongsToMany ==> many to many
-//add the through keep telling sequelize where these connection should be stored
 Cart.belongsToMany(Product, { through: CartItem });
-
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 //it syncs your models to the database by creating the appriopriate tables and if you have them relations.
 //npm start run this :
